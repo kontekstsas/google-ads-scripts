@@ -1,0 +1,4 @@
+google-ads
+google-cloud-bigquery
+pandas
+google-auth-oauthlib
