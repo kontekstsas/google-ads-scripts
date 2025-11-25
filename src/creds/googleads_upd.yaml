@@ -1,0 +1,6 @@
+  # Required Fields                                                           #
+  developer_token: 'YOUR_DEVELOPER_TOKEN'
+  login_customer_id: 'YOUR_CUSTOMER_ID'
+  key_json_path: '/src/creds/your-name-json-file'
+  use_proto_plus: True
+  
