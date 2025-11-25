@@ -1,0 +1,45 @@
+name: Google Ads Data Load
+
+on:
+  schedule:
+    - cron: '0 4 * * *' #запуск по расписанию в 4 утра UTC (7:00 по Мск)
+  workflow_dispatch:
+
+jobs:
+  run_google_etl:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+#установка библиотек
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-ads google-cloud-bigquery pandas pandas-gbq pyyaml requests google-auth
+
+      # Создаем ключи (нужны и для API Google Ads, и для BigQuery)
+      - name: Create Credentials Files
+        shell: bash
+        env:
+          GCP_KEY: ${{ secrets.GCP_SA_KEY }}
+          ADS_YAML: ${{ secrets.GOOGLE_ADS_YAML }}
+        run: |
+          echo "$GCP_KEY" > google-ads-key.json
+          echo "$ADS_YAML" > googleads.yaml
+
+#настройки выгрузки
+      - name: Run Google Ads Loader
+        run: |
+          python src/test_scripts/test_mcc_download_data.py \
+            --mcc_id 111111111\
+            --project_id your_project_idl \
+            --table_id your_table_id \
+            --config_file "googleads.yaml" \
+            --key_file "google-ads-key.json"
